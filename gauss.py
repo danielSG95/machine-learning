@@ -1,7 +1,6 @@
 from numpy.core.fromnumeric import size
 import matplotlib.pyplot as plt
 from sklearn import preprocessing
-import pandas as pd
 import streamlit as st
 import numpy as np
 from sklearn.naive_bayes import GaussianNB
@@ -17,11 +16,10 @@ def gauss(data):
 
     listaa = data.columns.values.tolist()
 
-    # elimino de la tabla el parametro predecir
     listaa.remove(param)
     if remove_column != 'Seleccionar':
         listaa.remove(remove_column)
-    # ahora con el eliminado buscarlo y guardarlo
+
     result = data[param]
 
     listadedf = []
@@ -64,23 +62,32 @@ def gauss(data):
     model2.fit(featuresencoders, label)
 
     columna = len(listaa)
-    texto = "Ingrese "+str(columna)+" parametros del vector a comparar, separados por coma(,)"
-    predecirresult = st.text_input(texto, '')
+    texto = "Ingrese "+str(columna)+" valores separados por espacio."
+    generate_array = st.button('generar random array')
+    x = ''
+    if generate_array:
+        x = np.random.randint(100, size=(columna))
+
+    predecirresult = st.text_input(texto, x)
 
     if predecirresult != '':
-        entrada = predecirresult.split(",")
-        map_obj = list(map(int, entrada))
+        entrada = predecirresult.replace('[', '')
+        entrada = entrada.replace(']', '')
+        entrada = entrada.split(' ')
+        map_obj = array_to_int(entrada)
         map_obj = np.array(map_obj)
         predicted = model.predict(np.asarray([map_obj]))
-        predicted2 = model2.predict(np.asarray([map_obj]))
-        print(np.asarray([map_obj]))
-        
-        co1, co2, co3 = st.columns(3)
-        with co2:
-            st.subheader('Prediccion con etiquetas')
-            st.write(predicted)
 
-        coo1, coo2, coo3 = st.columns(3)
-        with coo2:
-            st.subheader('Prediccion sin etiquetas')
-            st.write(predicted2)
+        st.subheader('Prediccion con etiquetas')
+        st.write(predicted)
+
+
+def array_to_int(array):
+    temporal = []
+    for i in array:
+        try:
+            temporal.append(int(i))
+        except ValueError:
+            continue
+    print(temporal)
+    return temporal
