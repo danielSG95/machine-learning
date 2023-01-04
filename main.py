@@ -7,6 +7,7 @@ from linear_regression import linear_regression
 from polynomial_regression import polynomial_regression
 from red_neuronal import red_neuronal
 from gauss import gauss
+from arbol_decision import arbol_decision
 
 file_types = {
     "csv": "text/csv",
@@ -41,7 +42,7 @@ print(operation_type)
 
 if dataset is not None:
     with st.expander('Tabla de datos'):
-        st.table(dataset)
+        st.dataframe(dataset, height=600, width=900)
 
     operation_type = st.selectbox('Elige un algoritmo', options=operations, index=0)
     if operation_type == 'Regresion Lineal':
@@ -53,4 +54,4 @@ if dataset is not None:
     elif operation_type == 'Clasificador Gaussiano':
         gauss(dataset)
     elif operation_type == 'Clasificador de arboles de decision':
-        print('ahh mamaste')
+        arbol_decision(dataset)
