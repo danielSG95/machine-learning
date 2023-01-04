@@ -2,6 +2,6 @@ streamlit
 pandas
 xlrd
 matplotlib
-pip install numpy
--U scikit-learn
+numpy
+scikit-learn
 scikit-metrics
