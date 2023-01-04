@@ -31,18 +31,16 @@ def arbol_decision(data):
 
     listadedf = np.array(listadedf)
 
-    # Creacion del codificador de palabras
+    # Codificador de palabras
     le = preprocessing.LabelEncoder()
-
-    # Se convierte los String a numeros
     listafittransform = []
     for x in listadedf:
         listafittransform.append(le.fit_transform(x))
 
     # Se convierte los string a numero del parametro
     label = le.fit_transform(result)
-    with st.expander("Resultados"):
-        st.header("Con etiquetas")
+    with st.expander("Codificando Strings"):
+        st.header("Encoding")
         fencoders = list(zip((listafittransform)))
         fencoders = np.array(fencoders)
         lengthcolumn = len(listaa)
@@ -50,7 +48,7 @@ def arbol_decision(data):
         fencoders = fencoders.reshape(int(lengthrow / lengthcolumn), lengthcolumn)
 
         st.dataframe(fencoders)
-        st.header("Sin etiquetas")
+        st.header("Sin Codificar")
         features = list(zip(np.asarray(listadedf)))
         features = np.asarray(features)
         lengthcolumn = len(features)
@@ -58,18 +56,18 @@ def arbol_decision(data):
         features = features.reshape(int(lengthrow / lengthcolumn), lengthcolumn)
         st.dataframe(features)
 
-    # se encaja con el modelo
-    clf = DecisionTreeClassifier(max_depth=4).fit(features, result)
-    fig, ax = plt.subplots()
-    plot_tree(clf, filled=True, fontsize=10)
-
     with st.expander("Ver Graficas"):
+        st.subheader('Sin Codificado')
+        clf = DecisionTreeClassifier(max_depth=4).fit(features, result)
+        fig, ax = plt.subplots()
+        plot_tree(clf, filled=True, fontsize=10)
         plt.figure(figsize=(50, 50))
-        #st.pyplot(fig)
+        st.pyplot(fig)
 
         clf2 = DecisionTreeClassifier(max_depth=5).fit(fencoders, label)
         fig2, ax2 = plt.subplots()
         plot_tree(clf2, filled=True)
 
+        st.subheader('Codificado')
         plt.figure(figsize=(60, 60))
         st.pyplot(fig2)
