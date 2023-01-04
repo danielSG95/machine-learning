@@ -34,8 +34,11 @@ def polynomial_regression(data):
 
     model = LinearRegression()
     model.fit(X_TRANSF, y)
-
+    
     Y_NEW = model.predict(X_TRANSF)
+
+    rmse = np.sqrt(mean_squared_error(y,Y_NEW))
+    r2 = r2_score(y, Y_NEW)
 
     x_new_min = 0.0
     x_new_max = float(prediccion)  # el calculo de la prediccion
@@ -45,6 +48,20 @@ def polynomial_regression(data):
 
     X_NEW_TRANSF = polinomial_feature.fit_transform(X_NEW)
     Y_NEW = model.predict(X_NEW_TRANSF)
+
+    coeficientes = model.coef_
+    coeficientes = np.asarray(coeficientes)
+
+    auxcoeficientes = coeficientes.reshape(-1, 1)
+    intercept = model.intercept_
+    intercept = str(model.intercept_).replace('[', '')
+    intercept = str(intercept).replace(']', '')
+
+    equation = get_equation(degree, auxcoeficientes, intercept)
+    data = {'Nombre': ['RMSE', 'R2', 'Prediccion', 'Ecuacion'],
+            'Value': [rmse, r2, Y_NEW[Y_NEW.size-1], equation]}
+
+    st.dataframe(pd.DataFrame(data=data))
 
     if st.button('Generar Graficas'):
         col3, col4 = st.columns(2)
@@ -75,3 +92,14 @@ def generar_puntos(x, y, x_var, y_var):
     plt.title("Grafica de puntos", fontsize=10)
     ax2.scatter(x, y, color='black')
     st.pyplot(fig2)
+
+
+def get_equation(grado, auxcoeficientes, intercept):
+    ecuacion = ''
+    for i in range(int(grado), 0, -1):
+        aux = str(auxcoeficientes[i]).replace('[', '')
+        aux = aux.replace(']', '')
+        ecuacion += str(aux)+'X^'+str(i)+' + '
+    ecuacion += str(intercept)
+
+    return ecuacion
